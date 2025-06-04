@@ -36,10 +36,12 @@ import com.limelight.ui.GameGestures;
 import com.limelight.ui.StreamView;
 import com.limelight.utils.Dialog;
 import com.limelight.utils.PanZoomHandler;
+import com.limelight.utils.PerformanceDataTracker;
 import com.limelight.utils.ServerHelper;
 import com.limelight.utils.ShortcutHelper;
 import com.limelight.utils.SpinnerDialog;
 import com.limelight.utils.UiHelper;
+
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -103,8 +105,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -113,7 +117,7 @@ import java.util.Map;
 public class Game extends Activity implements SurfaceHolder.Callback,
         OnGenericMotionListener, OnTouchListener, NvConnectionListener, EvdevListener,
         OnSystemUiVisibilityChangeListener, GameGestures, StreamView.InputCallbacks,
-        PerfOverlayListener, UsbDriverService.UsbDriverStateListener, View.OnKeyListener{
+        PerfOverlayListener, UsbDriverService.UsbDriverStateListener, View.OnKeyListener {
     public static Game instance;
 
     private int lastButtonState = 0;
@@ -191,6 +195,7 @@ public class Game extends Activity implements SurfaceHolder.Callback,
 
     private boolean quitOnStop = false;
     private boolean isHidingOverlays;
+    private boolean floatingButtonShown;
     private TextView notificationOverlayView;
     private int requestedNotificationOverlayVisibility = View.GONE;
     private View performanceOverlayView;
@@ -865,6 +870,12 @@ public class Game extends Activity implements SurfaceHolder.Callback,
             if (isInPictureInPictureMode()) {
                 isHidingOverlays = true;
 
+                floatingButtonShown = floatingMenuButton.isShown();
+
+                if (floatingButtonShown) {
+                    floatingMenuButton.setVisibility(View.GONE);
+                }
+
                 if (virtualController != null) {
                     virtualController.hide();
                 }
@@ -873,7 +884,7 @@ public class Game extends Activity implements SurfaceHolder.Callback,
                     keyBoardController.hide(true);
                 }
 
-                if (keyBoardLayoutController!=null && keyBoardLayoutController.shown) {
+                if (keyBoardLayoutController != null && keyBoardLayoutController.shown) {
                     keyBoardLayoutController.hide(true);
                 }
 
@@ -890,6 +901,10 @@ public class Game extends Activity implements SurfaceHolder.Callback,
             }
             else {
                 isHidingOverlays = false;
+
+                if (floatingButtonShown) {
+                    floatingMenuButton.setVisibility(View.VISIBLE);
+                }
 
                 // Restore overlays to previous state when leaving PiP
 
@@ -1402,46 +1417,47 @@ public class Game extends Activity implements SurfaceHolder.Callback,
 
             displayedFailureDialog = true;
             stopConnection();
+            String message = null;
+            String selectedVideoFormat = "";
 
-            if (prefConfig.enableLatencyToast) {
-                int averageEndToEndLat = decoderRenderer.getAverageEndToEndLatency();
-                int averageDecoderLat = decoderRenderer.getAverageDecoderLatency();
-                String message = null;
-                if (averageEndToEndLat > 0) {
-                    message = getResources().getString(R.string.conn_client_latency)+" "+averageEndToEndLat+" ms";
-                    if (averageDecoderLat > 0) {
-                        message += " ("+getResources().getString(R.string.conn_client_latency_hw)+" "+averageDecoderLat+" ms)";
-                    }
+            int averageEndToEndLat = decoderRenderer.getAverageEndToEndLatency();
+            int averageDecoderLat = decoderRenderer.getAverageDecoderLatency();
+
+            if (averageEndToEndLat > 0) {
+                message = getResources().getString(R.string.conn_client_latency) + " " + averageEndToEndLat + " ms";
+                if (averageDecoderLat > 0) {
+                    message += " (" + getResources().getString(R.string.conn_client_latency_hw) + " " + averageDecoderLat + " ms)";
                 }
-                else if (averageDecoderLat > 0) {
-                    message = getResources().getString(R.string.conn_hardware_latency)+" "+averageDecoderLat+" ms";
-                }
+            } else if (averageDecoderLat > 0) {
+                message = getResources().getString(R.string.conn_hardware_latency) + " " + averageDecoderLat + " ms";
+            }
 
-                // Add the video codec to the post-stream toast
-                if (message != null) {
-                    message += " [";
+            // Add the video codec to the post-stream toast
+            selectedVideoFormat += " [";
 
-                    if ((videoFormat & MoonBridge.VIDEO_FORMAT_MASK_H264) != 0) {
-                        message += "H.264";
-                    }
-                    else if ((videoFormat & MoonBridge.VIDEO_FORMAT_MASK_H265) != 0) {
-                        message += "HEVC";
-                    }
-                    else if ((videoFormat & MoonBridge.VIDEO_FORMAT_MASK_AV1) != 0) {
-                        message += "AV1";
-                    }
-                    else {
-                        message += "UNKNOWN";
-                    }
+            if ((videoFormat & MoonBridge.VIDEO_FORMAT_MASK_H264) != 0) {
+                selectedVideoFormat += "H.264";
+            } else if ((videoFormat & MoonBridge.VIDEO_FORMAT_MASK_H265) != 0) {
+                selectedVideoFormat += "HEVC";
+            } else if ((videoFormat & MoonBridge.VIDEO_FORMAT_MASK_AV1) != 0) {
+                selectedVideoFormat += "AV1";
+            }
+            else {
+                selectedVideoFormat += "UNKNOWN";
+            }
 
-                    if ((videoFormat & MoonBridge.VIDEO_FORMAT_MASK_10BIT) != 0) {
-                        message += " HDR";
-                    }
+            if ((videoFormat & MoonBridge.VIDEO_FORMAT_MASK_10BIT) != 0) {
+                selectedVideoFormat += " HDR";
+            }
 
-                    message += "]";
-                }
+            selectedVideoFormat += "]";
 
-                if (message != null) {
+            if (message != null) {
+                message += selectedVideoFormat;
+            }
+
+            if (message != null) {
+                if (prefConfig.enableLatencyToast) {
                     Toast.makeText(this, message, Toast.LENGTH_LONG).show();
                 }
             }
@@ -1453,9 +1469,33 @@ public class Game extends Activity implements SurfaceHolder.Callback,
                         .putInt("LastNotifiedCrashCount", 0)
                         .apply();
             }
+            if(prefConfig.enablePerfLogging && decoderRenderer.performanceWasTracked()) {
+                new PerformanceDataTracker().savePerformanceStatistics(
+                        getBaseContext(),
+                        Build.MODEL,
+                        Build.VERSION.SDK_INT + "",
+                        BuildConfig.VERSION_NAME,
+                        selectedVideoFormat,
+                        decoderRenderer.getMinDecoderLatency(),
+                        decoderRenderer.getMinDecoderLatencyFullLog(),
+                        String.valueOf((prefConfig.bitrate / 1000)),
+                    displayWidth + "x" + displayHeight,
+                    prefConfig.fps + " hz",
+                    decoderRenderer.getAverageDecoderLatency() + " ms",
+                        PreferenceConfiguration.getSelectedFramePacingName(getBaseContext()),
+                        formatCurrentTime(System.currentTimeMillis())
+                );
+            }
+
         }
 
         finish();
+    }
+
+    public static String formatCurrentTime(long currentTimeMillis) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        Date date = new Date(currentTimeMillis);
+        return dateFormat.format(date);
     }
 
     private void setInputGrabState(boolean grab) {
