@@ -134,6 +134,19 @@
     <string name="perf_overlay_netlatency">Average network latency: %1$d ms (variance: %2$d ms)</string>
     <string name="perf_overlay_dectime">Average decoding time: %1$.2f ms</string>
 
+    <!-- Performance Report Sharing -->
+    <string name="email_prefix_message">
+        Please send this email as-is to artemistics.logs@gmail.com to support the community.\n
+        Your shared performance data will help improve and expand the dataset available at:\n
+        https://tinyurl.com/artemis-performance\n\n
+    </string>
+
+    <string name="email_recipient">artemistics.logs@gmail.com</string>
+    <string name="email_subject">Artemistics - Performance Log</string>
+    <string name="email_chooser_title">Send performance log...</string>
+    <string name="toast_no_email_clients">No email clients installed.</string>
+    <string name="toast_no_logs">There is no performance data stored yet.</string>
+
     <!-- AppList activity -->
     <string name="applist_connect_msg">Connecting to PC…</string>
     <string name="applist_menu_resume">Resume Session</string>
@@ -146,6 +159,7 @@
     <string name="applist_menu_cancel">Cancel</string>
     <string name="applist_menu_details">View Details</string>
     <string name="applist_menu_scut">Create Shortcut</string>
+    <string name="applist_menu_export_launcher">Export Launcher File</string>
     <string name="applist_menu_tv_channel">Add to Channel</string>
     <string name="applist_menu_hide_app">Hide App</string>
     <string name="applist_refresh_title">App List</string>
@@ -304,6 +318,8 @@
     <string name="summary_privacy_policy">View Artemis\'s privacy policy</string>
     <string name="title_special_key_help">Custom Keys help</string>
     <string name="summary_special_key_help">Instructions about how to setup custom special keys</string>
+    <string name="summary_performance_link">See performance of other devices.\nPlease note, these data are managed by the community, it is not managed by Artemis and does not represent Artemis officially.</string>
+    <string name="title_performance_link">Performance Dashboard</string>
 
     <!-- Toasts -->
     <string name="toast_controller_type_changed">Gamepad type may be changed due to motion sensor emulation</string>
@@ -346,7 +362,7 @@
 
     <!-- In Game menu -->
     <string name="game_menu_toggle_keyboard">Show soft keyboard</string>
-    <string name="game_menu_hud">Toggle Performance Overlay</string>
+    <string name="game_menu_toggle_hud">Toggle Performance Overlay</string>
     <string name="game_menu_toggle_floating_button">Toggle Floating Button</string>
     <string name="game_menu_select_mouse_mode">Select Mouse mode</string>
     <string name="game_menu_enable_zoom_mode">Enable Pan/Zoom</string>
@@ -418,6 +434,8 @@
     <string name="summary_checkbox_onscreen_style_official">If you still like the old style of official virtual gamepad buttons, you can select this option.\nButton shapes can be square if you selected the bottom virtual button [Normal buttons are square buttons]</string>
     <string name="title_checkbox_enable_perf_overlay_lite">Enable Lite mode</string>
     <string name="summary_checkbox_enable_perf_overlay_lite">Display simplified performance information: Network Speed / Latency / Decode / Packet Loss Rate / FPS</string>
+    <string name="title_checkbox_enable_perf_logging">Enable Performance Logging</string>
+    <string name="summary_checkbox_enable_perf_logging">"Stores performance data per configuration. (Offline only) "</string>
     <string name="title_checkbox_enable_perf_overlay_lite_dialog">Lite mode click to pop up quick options</string>
     <string name="summary_checkbox_enable_perf_overlay_lite_dialog">Replace the back button logic, pop up the game quick menu.</string>
     <string name="title_virtual_trackpad_settings">Virtual Trackpad Settings</string>
@@ -432,6 +450,8 @@
     <string name="summary_auto_orientation">The streaming screen will be displayed according to the device\'s orientation when the stream begins.</string>
     <string name="title_import_special_button">Import Custom Keys</string>
     <string name="summary_import_special_button">Available in Back Menu and special keys.\nNote: Importing will overwrite current configuration, please backup accordingly.</string>
+    <string name="summary_share_performance_logs">Share your performance with friends or the community</string>
+    <string name="title_share_performance_logs_button">Share Performance Logs</string>
     <string name="title_software_update">Software Update</string>
     <string name="summary_software_update">Artemis Nior Version by ClassicOldSong - Visit GitHub Release to get latest version</string>
     <string name="title_follow_update">Follow Update</string>
@@ -607,4 +627,28 @@
     <!-- Compliance -->
     <string name="category_basic_settings" />
     <string name="title_checkbox_stretch_video" />
+    <string name="keyboard_clear_all">Clear All</string>
+    <string name="keyboard_add_keys">Add Keys</string>
+    <string name="keyboard_select_keys">Select Keys to Add</string>
+    <string name="keyboard_clear_all_confirm_title">Clear All Keys</string>
+    <string name="keyboard_clear_all_confirm_message">Are you sure you want to remove all keys?</string>
+    <string name="keyboard_add">Add</string>
+    <string name="keyboard_configure_movable">You can now move the Configure button</string>
+
+    <!-- ShortcutHelper Toast Messages -->
+    <string name="export_launcher_computer_details_incomplete">Cannot export: Computer details are incomplete.</string>
+    <string name="export_launcher_app_details_incomplete">Cannot export: App details are incomplete.</string>
+    <string name="failed_to_initiate_file_export">Failed to initiate file export: %s</string>
+    <string name="file_export_failed_no_location_selected">File export failed: No location selected.</string>
+    <string name="file_export_failed_no_content_to_write">File export failed: No content to write.</string>
+    <string name="file_exported_successfully">File exported successfully.</string>
+    <string name="failed_to_open_file_for_writing">Failed to open file for writing.</string>
+    <string name="error_writing_file">Error writing file: %s</string>
+    <string name="unexpected_error_during_file_export">An unexpected error occurred during file export.</string>
+
+    <!-- AppView Toast Messages -->
+    <string name="file_export_cancelled">File export cancelled.</string>
+    <string name="app_removed_from_pc">App removed from PC</string>
+    <string name="title_export_sunshine_launcher_file">Export Launcher File for Sunshine</string>
+    <string name="message_export_sunshine_launcher_file">Exporting launcher file for Sunshine is unstable, and may break at any moment. You\'ll need to export again every time if you changed the app name or image.\nUse Apollo for a more stable experience.</string>
 </resources>

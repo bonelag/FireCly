@@ -242,7 +242,7 @@
             android:title="@string/title_checkbox_vibrate_fallback"
             app:iconSpaceReserved="false" />
         <com.limelight.preferences.SeekBarPreference
-            android:defaultValue="0"
+            android:defaultValue="100"
             android:dependency="checkbox_vibrate_fallback"
             android:key="seekbar_vibrate_fallback_strength"
             android:max="200"
@@ -530,6 +530,7 @@
             android:summary="@string/summary_enable_perf_overlay"
             android:title="@string/title_enable_perf_overlay"
             app:iconSpaceReserved="false" />
+
         <CheckBoxPreference
             android:defaultValue="false"
             android:dependency="checkbox_enable_perf_overlay"
@@ -537,6 +538,7 @@
             android:summary="@string/summary_checkbox_enable_perf_overlay_lite"
             android:title="@string/title_checkbox_enable_perf_overlay_lite"
             app:iconSpaceReserved="false" />
+
         <CheckBoxPreference
             android:defaultValue="false"
             android:dependency="checkbox_enable_perf_overlay_lite"
@@ -862,6 +864,27 @@
             android:title="@string/title_special_key_help"
             app:iconSpaceReserved="false" />
 
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="checkbox_enable_perf_logging"
+            android:summary="@string/summary_checkbox_enable_perf_logging"
+            android:title="@string/title_checkbox_enable_perf_logging"
+            app:iconSpaceReserved="false" />
+
+        <Preference
+            android:key="share_performance_logs"
+            android:summary="@string/summary_share_performance_logs"
+            android:title="@string/title_share_performance_logs_button"
+            android:dependency="checkbox_enable_perf_logging"
+            app:iconSpaceReserved="false" />
+
+        <com.limelight.preferences.WebLauncherPreference
+            url="https://github.com/ClassicOldSong/moonlight-android/wiki/Performance-Statistics-Collection"
+            android:key="option_help_custom_keys"
+            android:summary="@string/summary_performance_link"
+            android:title="@string/title_performance_link"
+            app:iconSpaceReserved="false" />
+
         <Preference
             android:key="pref_debug_info"
             android:summary="@string/summary_debug_info"
@@ -869,10 +892,17 @@
             app:iconSpaceReserved="false" />
 
         <com.limelight.preferences.WebLauncherPreference
-            url="https://github.com/zeperix/FireCly/releases"
+            url="https://github.com/ClassicOldSong/moonlight-android/releases"
             android:key="option_software_release"
             android:summary="@string/summary_software_update"
             android:title="@string/title_software_update"
+            app:iconSpaceReserved="false" />
+
+        <com.limelight.preferences.WebLauncherPreference
+            url="@string/obtainium_app_url"
+            android:key="option_follow_update"
+            android:summary="@string/summary_follow_update"
+            android:title="@string/title_follow_update"
             app:iconSpaceReserved="false" />
     </PreferenceCategory>
 </PreferenceScreen>
